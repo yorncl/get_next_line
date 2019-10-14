@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 14:58:23 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/14 15:24:56 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/14 16:27:36 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,6 @@ int endofline(char *str)
 	while (str[++i])
 		if (str[i] == '\n')
 			return (i);
-	//printf("%d : \"%s\"\n", ft_strlen(str), str);
-	//sleep(1);
 	return (-1);
 }
 
@@ -70,21 +68,17 @@ int	allocandconcat(char **line, char *buff, int tocpy)
 	int i;
 	int l;
 
-	i = 0;
 	l = (*line ? ft_strlen(*line) : 0);
 	if (!(tmp = malloc((l + tocpy + 1) * sizeof(char))))
 		return (0);
 	tmp[l + tocpy] = '\0';
-	while (i < l)
-	{
+	i = -1;
+	while (++i < l)
 		tmp[i] = (*line)[i];
-		i++;
-	}
-	while (i < l + tocpy)
-	{
-		tmp[i] = buff[i - l];
-		i++;
-	}
+	i = -1;
+	while (++i < tocpy)
+		tmp[l + i] = buff[i];
+	printf("%d \n", tocpy);
 	if (*line)
 		free(*line);
 	*line = tmp;
@@ -96,6 +90,7 @@ int	allocandconcat(char **line, char *buff, int tocpy)
 // {
 
 // }
+
 
 int get_next_line(int fd, char **line)
 {
@@ -113,7 +108,7 @@ int get_next_line(int fd, char **line)
 			*line = ft_substr(charsleft, 0, i);
 			tmp = charsleft;
 			if(i < ft_strlen(charsleft))
-				charsleft = ft_substr(charsleft, i + 1, ft_strlen(charsleft));
+				charsleft = ft_substr(charsleft, i + 1, ft_strlen(charsleft) - i);
 			if (tmp)
 			{
 				free (tmp);
@@ -123,6 +118,7 @@ int get_next_line(int fd, char **line)
 		else
 		{
 			*line = ft_substr(charsleft, 0, ft_strlen(charsleft));
+			free(charsleft);
 		}
 	}
 	
@@ -136,7 +132,7 @@ int get_next_line(int fd, char **line)
 	 	return (0);
 		free(buff);
 	}
-	while ((i = endofline(buff)) == -1 && rd > 0)
+	while ((i = endofline(buff)) == -1 && rd == BUFFER_SIZE)
 	{
 		if(!allocandconcat(line,buff, rd) || (rd = read(fd, buff, BUFFER_SIZE)) == -1)
 		{
@@ -146,7 +142,9 @@ int get_next_line(int fd, char **line)
 	}
 	allocandconcat(line, buff, i);
 	if (i != BUFFER_SIZE)
-		charsleft = ft_substr(buff, i + 1, BUFFER_SIZE - i);
+		charsleft = ft_substr(buff, i + 1, BUFFER_SIZE - i + 1);
+	
+	
 	free(buff);
 	return (1);
 }
