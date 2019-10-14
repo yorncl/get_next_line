@@ -6,80 +6,128 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 14:58:23 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/13 18:28:39 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/14 13:20:50 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "get_next_line.h"
+#include "get_next_line.h"
 
-// char *ft_substr(char const *s, unsigned int start, size_t len)
-// {
-// 	char *dest;
-// 	size_t i;
+int		ft_strlen(const char *s)
+{
+	int l;
 
-// 	if (!(dest = (malloc(len + 1))))
-// 		return (0);
-// 	i = -1;
-// 	while (s[++i] && i < len)
-// 		dest[i] = s[start + i];
-// 	dest[len] = '\0';
-// 	return (dest);
-// }
+	l = 0;
+	while (s[l])
+		l++;
+	return (l);
+}
 
-// char *init_buff()
-// {
-// 	char *buff;
+char *ft_substr(char const *s, unsigned int start, size_t len)
+{
+	char *dest;
+	size_t i;
 
-// 	if (!(buff = malloc(BUFF_SIZE * sizeof(char))))
-// 		return (0);
-// 	return (buff);
-// }
+	if (!(dest = (malloc(len + 1))))
+		return (0);
+	i = -1;
+	while (s[++i] && i < len)
+		dest[i] = s[start + i];
+	dest[len] = '\0';
+	return (dest);
+}
 
-// int endofline(char *str)
-// {
-// 	int i;
+char *init_buff()
+{
+	char *buff;
 
-// 	if (!str)
-// 		return (-1);
-// 	i = -1;
-// 	while (str[++i])
-// 		if (str[i] == '\n')
-// 			return (i);
-// 	return (i);
-// }
+	if (!(buff = malloc(BUFFER_SIZE * sizeof(char))))
+		return (0);
+	return (buff);
+}
 
-// int get_next_line(int fd, char **line)
-// {
-// 	static char *left;
-// 	char *buff;
-// 	int i;
-// 	int rd;
+int endofline(char *str)
+{
+	int i;
 
-// 	buff = init_buff();
+	if (!str)
+		return (-1);
+	i = -1;
+	while (str[++i])
+		if (str[i] == '\n')
+			return (i);
+	return (i);
+}
 
-// 	if (left)
-// 	{
-// 		if ((i = endofline(left)) != -1)
-// 		{
-// 			*line = ft_substr(left, 0, i);
-// 			if(i < BUFFER_SIZE)
-					
-// 		}
-// 		else
-// 		{
 
-// 		}
-// 	}
-// 	free(buff);
-// }
+int	allocandconcat(char **line, char *buff, int tocpy)
+{
+	char *tmp;
+	int i;
+	int l;
+
+	i = 0;
+	l = (*line ? ft_strlen(*line) : 0);
+	if (!(tmp = malloc((l + tocpy + 1) * sizeof(char))))
+		return (0);
+	tmp[l + tocpy] = '\0';
+	while (i < l)
+		tmp[i] = *line[i];
+	while (i < l + tocpy)
+	{
+		tmp[i] = buff[i - l];
+		i++;
+	}
+	*line = tmp;
+	return (1);
+}
 
 #include <stdio.h>
-#include <unistd.h>
-int main()
-{
-	char test[50];
 
-	int fd = open("testfile", O_RDONLY);
-	read(fd,buff,50);
-	printf("%s", buff);
+int get_next_line(int fd, char **line)
+{
+	static char *charsleft;
+	char *buff;
+	char *tmp;
+	int i;
+	int rd;
+
+	if (charsleft)
+	{
+		if ((i = endofline(charsleft)) != -1)
+		{
+			*line = ft_substr(charsleft, 0, i);
+			tmp = charsleft;
+			if(i < ft_strlen(charsleft))
+				charsleft = ft_substr(charsleft, i + 1, ft_strlen(charsleft));
+			if (tmp)
+			{
+				free (tmp);
+				return (1);
+			}
+		}
+		else
+		{
+			*line = ft_substr(charsleft, 0, ft_strlen(charsleft));
+		}
+	}
+	
+	buff = init_buff();
+	if ((rd = read(fd, buff, BUFFER_SIZE)) == -1)
+		return (-1);
+	if (rd == 0)
+	{
+	 	return (0);
+		free(buff);
+	}
+	while ((i = endofline(buff)) == -1)
+		if(!allocandconcat(line,buff, BUFFER_SIZE))
+		{
+			free(buff);
+			return (-1);
+		}
+	allocandconcat(line, buff, i);
+	if (i != BUFFER_SIZE)
+		charsleft = ft_substr(buff, i + 1, BUFFER_SIZE - i);
+	free(buff);
+	return (1);
 }
