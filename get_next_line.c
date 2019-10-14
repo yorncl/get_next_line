@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 14:58:23 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/14 14:00:45 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/14 15:24:56 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,17 @@ int	allocandconcat(char **line, char *buff, int tocpy)
 		tmp[i] = buff[i - l];
 		i++;
 	}
+	if (*line)
+		free(*line);
 	*line = tmp;
 	return (1);
 }
 
+
+// handlecharsleft()
+// {
+
+// }
 
 int get_next_line(int fd, char **line)
 {
@@ -98,6 +105,7 @@ int get_next_line(int fd, char **line)
 	int i;
 	int rd;
 
+	*line = 0;
 	if (charsleft)
 	{
 		if ((i = endofline(charsleft)) != -1)
@@ -118,7 +126,9 @@ int get_next_line(int fd, char **line)
 		}
 	}
 	
+	//TO PROTECC
 	buff = init_buff();
+	
 	if ((rd = read(fd, buff, BUFFER_SIZE)) == -1)
 		return (-1);
 	if (rd == 0)
@@ -126,7 +136,7 @@ int get_next_line(int fd, char **line)
 	 	return (0);
 		free(buff);
 	}
-	while ((i = endofline(buff)) == -1)
+	while ((i = endofline(buff)) == -1 && rd > 0)
 	{
 		if(!allocandconcat(line,buff, rd) || (rd = read(fd, buff, BUFFER_SIZE)) == -1)
 		{
