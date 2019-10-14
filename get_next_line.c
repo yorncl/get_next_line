@@ -6,11 +6,14 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 14:58:23 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/14 13:20:50 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/14 14:00:45 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+#include <stdio.h>
+
 
 int		ft_strlen(const char *s)
 {
@@ -55,7 +58,9 @@ int endofline(char *str)
 	while (str[++i])
 		if (str[i] == '\n')
 			return (i);
-	return (i);
+	//printf("%d : \"%s\"\n", ft_strlen(str), str);
+	//sleep(1);
+	return (-1);
 }
 
 
@@ -71,7 +76,10 @@ int	allocandconcat(char **line, char *buff, int tocpy)
 		return (0);
 	tmp[l + tocpy] = '\0';
 	while (i < l)
-		tmp[i] = *line[i];
+	{
+		tmp[i] = (*line)[i];
+		i++;
+	}
 	while (i < l + tocpy)
 	{
 		tmp[i] = buff[i - l];
@@ -81,7 +89,6 @@ int	allocandconcat(char **line, char *buff, int tocpy)
 	return (1);
 }
 
-#include <stdio.h>
 
 int get_next_line(int fd, char **line)
 {
@@ -120,11 +127,13 @@ int get_next_line(int fd, char **line)
 		free(buff);
 	}
 	while ((i = endofline(buff)) == -1)
-		if(!allocandconcat(line,buff, BUFFER_SIZE))
+	{
+		if(!allocandconcat(line,buff, rd) || (rd = read(fd, buff, BUFFER_SIZE)) == -1)
 		{
 			free(buff);
 			return (-1);
 		}
+	}
 	allocandconcat(line, buff, i);
 	if (i != BUFFER_SIZE)
 		charsleft = ft_substr(buff, i + 1, BUFFER_SIZE - i);
