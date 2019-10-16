@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 14:58:23 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/14 16:27:36 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/16 19:49:35 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,13 @@ char *ft_substr(char const *s, unsigned int start, size_t len)
 char *init_buff()
 {
 	char *buff;
+	int i;
 
 	if (!(buff = malloc(BUFFER_SIZE * sizeof(char))))
 		return (0);
+	i = -1;
+	while(++i < BUFFER_SIZE)
+		buff[i] = 0;
 	return (buff);
 }
 
@@ -82,6 +86,7 @@ int	allocandconcat(char **line, char *buff, int tocpy)
 	if (*line)
 		free(*line);
 	*line = tmp;
+	i = -1;
 	return (1);
 }
 
@@ -119,22 +124,31 @@ int get_next_line(int fd, char **line)
 		{
 			*line = ft_substr(charsleft, 0, ft_strlen(charsleft));
 			free(charsleft);
+			charsleft = 0;
 		}
 	}
 	
 	//TO PROTECC
 	buff = init_buff();
-	
+
 	if ((rd = read(fd, buff, BUFFER_SIZE)) == -1)
 		return (-1);
 	if (rd == 0)
 	{
-	 	return (0);
 		free(buff);
+	 	return (*line ? 1 : 0);
 	}
 	while ((i = endofline(buff)) == -1 && rd == BUFFER_SIZE)
 	{
-		if(!allocandconcat(line,buff, rd) || (rd = read(fd, buff, BUFFER_SIZE)) == -1)
+		if(!allocandconcat(line,buff, rd))
+		{
+			free(buff);
+			return (-1);
+		}
+		i = -1;
+		while (++i < BUFFER_SIZE)
+			buff[i] = 0;
+		if((rd = read(fd, buff, BUFFER_SIZE)) == -1)
 		{
 			free(buff);
 			return (-1);
@@ -142,9 +156,7 @@ int get_next_line(int fd, char **line)
 	}
 	allocandconcat(line, buff, i);
 	if (i != BUFFER_SIZE)
-		charsleft = ft_substr(buff, i + 1, BUFFER_SIZE - i + 1);
-	
-	
+		charsleft = ft_substr(buff, i + 1, BUFFER_SIZE - i);
 	free(buff);
 	return (1);
 }

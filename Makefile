@@ -9,5 +9,5 @@ $(NAME) : $(FILES)
 	gcc -Wall -Werror -Wextra -D BUFFER_SIZE=3 -I get_next_line.h $(FILES) -o $(NAME)
 
 test : 
-	gcc -Wall -Werror -Wextra -D BUFFER_SIZE=56 -I get_next_line.h $(FILES) -o $(NAME)
+	gcc -Wall -Werror -Wextra -D BUFFER_SIZE=60 -I get_next_line.h $(FILES) -o $(NAME)
 	./$(NAME)

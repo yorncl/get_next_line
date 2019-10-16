@@ -21,4 +21,8 @@ int main()
 	printf("3rd line : \"%s\"	returned : %d\n",str, returned);
 	returned = get_next_line(fd, &str);
 	printf("4th line : \"%s\"	returned : %d\n",str, returned);
+	returned = get_next_line(fd, &str);
+	printf("5th line : \"%s\"	returned : %d\n",str, returned);
+	returned = get_next_line(fd, &str);
+	printf("6th line : \"%s\"	returned : %d\n",str, returned);
 }
