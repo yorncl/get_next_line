@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 14:58:23 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/16 19:49:35 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/17 13:39:04 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,42 +25,53 @@ int		ft_strlen(const char *s)
 	return (l);
 }
 
+void	*ft_calloc(size_t count, size_t size)
+{
+	unsigned char *ptr;
+	int len;
+	int i ;
+
+	len = count * size;
+	if (!(ptr = malloc(len)))
+		return (0);
+	i = -1;
+	while (++i < len)
+		ptr[i] = 0;
+	return (ptr);
+}
+
+
 char *ft_substr(char const *s, unsigned int start, size_t len)
 {
 	char *dest;
 	size_t i;
 
-	if (!(dest = (malloc(len + 1))))
+	if (!(dest = (ft_calloc(1, len + 1))))
 		return (0);
 	i = -1;
 	while (s[++i] && i < len)
 		dest[i] = s[start + i];
-	dest[len] = '\0';
 	return (dest);
 }
 
 char *init_buff()
 {
 	char *buff;
-	int i;
 
-	if (!(buff = malloc(BUFFER_SIZE * sizeof(char))))
+	if (!(buff = ft_calloc(1, BUFFER_SIZE * sizeof(char))))
 		return (0);
-	i = -1;
-	while(++i < BUFFER_SIZE)
-		buff[i] = 0;
 	return (buff);
 }
 
-int endofline(char *str)
+int endofline(char *str, int len)
 {
 	int i;
 
 	if (!str)
 		return (-1);
 	i = -1;
-	while (str[++i])
-		if (str[i] == '\n')
+	while (++i < len)
+		if (str[i] == '\n' || str[i] == '\0')
 			return (i);
 	return (-1);
 }
@@ -73,16 +84,14 @@ int	allocandconcat(char **line, char *buff, int tocpy)
 	int l;
 
 	l = (*line ? ft_strlen(*line) : 0);
-	if (!(tmp = malloc((l + tocpy + 1) * sizeof(char))))
+	if (!(tmp = ft_calloc(1,(l + tocpy + 1) * sizeof(char))))
 		return (0);
-	tmp[l + tocpy] = '\0';
 	i = -1;
 	while (++i < l)
 		tmp[i] = (*line)[i];
 	i = -1;
 	while (++i < tocpy)
 		tmp[l + i] = buff[i];
-	printf("%d \n", tocpy);
 	if (*line)
 		free(*line);
 	*line = tmp;
@@ -108,7 +117,7 @@ int get_next_line(int fd, char **line)
 	*line = 0;
 	if (charsleft)
 	{
-		if ((i = endofline(charsleft)) != -1)
+		if ((i = endofline(charsleft, ft_strlen(charsleft))) != -1)
 		{
 			*line = ft_substr(charsleft, 0, i);
 			tmp = charsleft;
@@ -138,7 +147,7 @@ int get_next_line(int fd, char **line)
 		free(buff);
 	 	return (*line ? 1 : 0);
 	}
-	while ((i = endofline(buff)) == -1 && rd == BUFFER_SIZE)
+	while ((i = endofline(buff, BUFFER_SIZE)) == -1 && rd == BUFFER_SIZE)
 	{
 		if(!allocandconcat(line,buff, rd))
 		{
@@ -156,7 +165,7 @@ int get_next_line(int fd, char **line)
 	}
 	allocandconcat(line, buff, i);
 	if (i != BUFFER_SIZE)
-		charsleft = ft_substr(buff, i + 1, BUFFER_SIZE - i);
+		charsleft = ft_substr(buff, i + 1, BUFFER_SIZE - i - 1);
 	free(buff);
 	return (1);
 }
