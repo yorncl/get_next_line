@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 10:58:05 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/19 13:32:46 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/19 14:01:37 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int	get_next_line(int fd, char **line)
 		free(buff);
 		return (*line ? 1 : 0);
 	}
-	if ((i = readloop(fd, &rd, buff, line) == -1))
+	if ((i = readloop(fd, &rd, buff, line)) == -1)
 		return (-1);
 	allocandconcat(line, buff, i);
 	if (i != BUFFER_SIZE)
