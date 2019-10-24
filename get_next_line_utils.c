@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 14:58:25 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/19 14:01:55 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/24 15:44:32 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ int	endofline(char *str, int len)
 	if (!str)
 		return (-1);
 	i = -1;
-	while (++i < len)
-		if (str[i] == '\n' || str[i] == '\0')
+	while (++i < len && str[i])
+		if (str[i] == '\n')
 			return (i);
 	return (-1);
 }

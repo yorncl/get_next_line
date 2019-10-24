@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 10:58:05 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/19 14:01:37 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/24 15:07:50 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ int	get_next_line(int fd, char **line)
 	int			rd;
 
 	*line = 0;
+	// HANDLES CHARS LEFT si une ligne a ete lu on retourne 1
 	if (charsleft && (i = handlecharsleft(line, &charsleft)))
 		return (1);
 	if (!(buff = ft_calloc(1, BUFFER_SIZE * sizeof(char))))
@@ -87,7 +88,7 @@ int	get_next_line(int fd, char **line)
 		return (-1);
 	allocandconcat(line, buff, i);
 	if (i != BUFFER_SIZE)
-		charsleft = (rd == i ? 0 : ft_substr(buff, i + 1, BUFFER_SIZE - i - 1));
+		charsleft = (rd == i ? 0 : ft_substr(buff, i, BUFFER_SIZE - i - 1));
 	free(buff);
 	return (1);
 }
