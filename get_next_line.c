@@ -82,7 +82,7 @@ int	get_next_line(int fd, char **line)
 	if (rd == 0)
 	{
 		free(buff);
-		return (*line ? 1 : 0);
+		return (*line && charsleft ? 1 : 0);
 	}
 	if ((i = readloop(fd, &rd, buff, line)) == -1)
 		return (-1);
