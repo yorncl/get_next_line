@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 14:58:25 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/26 17:23:23 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/26 18:51:03 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,21 +63,55 @@ int	endofline(char *str, int len)
 	return (-1);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_memjoin(char const *s1, size_t l1, char const *s2, size_t l2)
 {
 	char	*str;
 	char	*ptr;
-	size_t	l1;
-	size_t	l2;
 
-	l1 = s1 ? ft_strlen(s1) : 0;
-	l2 = s2 ? ft_strlen(s2) : 0;
-	if (!(str = ft_calloc(1, l1 + l2 + 1)))
+	if (!(str = ft_calloc(1, l1 + l2)))
 		return (0);
 	ptr = str;
-	while (s1 && *s1)
+	while (l1--)
 		*ptr++ = *s1++;
-	while (s2 && *s2)
+	while (l2--)
 		*ptr++ = *s2++;
 	return (str);
+}
+
+
+t_list	*ft_lstnew(int fd)
+{
+	t_list *el;
+
+	if (!(el = ft_calloc(1, sizeof(t_list))))
+		return (NULL);
+	el->fd = fd;
+	el->charsleft = 0;
+	el->size = 0;
+	el->next = 0;
+	printf("MAILLON CREE\n");
+	return (el);
+}
+
+t_list	*ft_lst_by_fd(int fd, t_list **list)
+{
+	t_list *prev;
+	t_list *l;
+
+	if (!*list)
+	{
+		*list = ft_lstnew(fd);
+		return (*list);
+	}
+	l = *list;
+	while (l)
+		if (fd == l->fd)
+			return (l);
+		else
+		{
+			prev = l;
+			l = l->next;
+		}
+	prev->next = ft_lstnew(fd);
+	return (prev->next);
 }
