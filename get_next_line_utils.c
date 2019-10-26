@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 14:58:25 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/24 15:44:32 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/26 17:23:23 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,24 +63,21 @@ int	endofline(char *str, int len)
 	return (-1);
 }
 
-int	allocandconcat(char **line, char *buff, int tocpy)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	char	*tmp;
-	int		i;
-	int		l;
+	char	*str;
+	char	*ptr;
+	size_t	l1;
+	size_t	l2;
 
-	l = (*line ? ft_strlen(*line) : 0);
-	if (!(tmp = ft_calloc(1,(l + tocpy + 1) * sizeof(char))))
+	l1 = s1 ? ft_strlen(s1) : 0;
+	l2 = s2 ? ft_strlen(s2) : 0;
+	if (!(str = ft_calloc(1, l1 + l2 + 1)))
 		return (0);
-	i = -1;
-	while (++i < l)
-		tmp[i] = (*line)[i];
-	i = -1;
-	while (++i < tocpy)
-		tmp[l + i] = buff[i];
-	if (*line)
-		free(*line);
-	*line = tmp;
-	i = -1;
-	return (1);
+	ptr = str;
+	while (s1 && *s1)
+		*ptr++ = *s1++;
+	while (s2 && *s2)
+		*ptr++ = *s2++;
+	return (str);
 }
