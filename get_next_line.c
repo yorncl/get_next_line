@@ -6,89 +6,75 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 10:58:05 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/24 15:07:50 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/26 18:54:09 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	handlecharsleft(char **line, char **left)
-{
-	char	*charsleft;
-	char	*tmp;
-	int		i;
 
-	charsleft = *left;
-	if ((i = endofline(charsleft, ft_strlen(charsleft))) != -1)
+
+int		managecharsleft(t_list *l, char **line)
+{
+	char *tmp;
+	int	eol;
+
+	if (l->charsleft == 0)
+		return (0);
+	if ((eol = endofline(l->charsleft, l->size)) != -1) 	//SI FIN DE LIGNE
 	{
-		*line = ft_substr(charsleft, 0, i);
-		tmp = charsleft;
-		if (i < ft_strlen(charsleft)
-			&& !(*left = ft_substr(charsleft, i + 1, ft_strlen(charsleft) - i)))
+		if (eol == 0 && !(*line = ft_calloc(1, 1))) // si le \n est le premier charactere
 			return (-1);
-		if (tmp)
-		{
-			free(tmp);
-			return (1);
-		}
+		else if (!(*line = ft_substr(l->charsleft, 0, eol))) // on ne rajoute pas le + 1 pour ne pas inclure le \n dans line
+			return (-1);
+		tmp = l->charsleft;
+		l->charsleft = l->size == 1 ? 0 :
+			ft_substr(l->charsleft, eol + 1, l->size - eol); // CHECK ERROR CHECK ERROR CHECK ERROR CHECK ERROR
+		free(tmp);
+		l->size -= eol + 1;
+		return (0);
 	}
-	else
-	{
-		*line = ft_substr(charsleft, 0, ft_strlen(charsleft));
-		free(charsleft);
-		*left = 0;
+	else{
+		*line = l->charsleft; // no need to free
+		l->charsleft = 0;
+		eol = l->size;
+		l->size = 0;
+		return (eol); // Return the length of the string just read
 	}
-	return (0);
 }
 
-int	readloop(int fd, int *rd, char *buff, char **line)
-{
-	int i;
-
-	while ((i = endofline(buff, BUFFER_SIZE)) == -1 && *rd == BUFFER_SIZE)
-	{
-		if (!allocandconcat(line, buff, *rd))
-		{
-			free(buff);
-			return (-1);
-		}
-		i = -1;
-		while (++i < BUFFER_SIZE)
-			buff[i] = 0;
-		if ((*rd = read(fd, buff, BUFFER_SIZE)) == -1)
-		{
-			free(buff);
-			return (-1);
-		}
-	}
-	return (i);
-}
 
 int	get_next_line(int fd, char **line)
 {
-	static char	*charsleft;
-	char		*buff;
-	int			i;
-	int			rd;
+	static t_list	*list;
+	t_list			*current;
+	char			*buff;
+	int				rd;
+	int				i;
 
-	*line = 0;
-	// HANDLES CHARS LEFT si une ligne a ete lu on retourne 1
-	if (charsleft && (i = handlecharsleft(line, &charsleft)))
+	(void) current;	
+	(void)	buff;
+	rd = 0;
+	//ERREUR MAILLON
+	if(!(current = ft_lst_by_fd(fd, &list)))
+		return (-1);
+	//CE QUI RESTE
+	current->charsleft = strdup("1\n2\n3");
+	current->size = ft_strlen("1\n2\n3");
+	if ((i = managecharsleft(current, line)) == 0)
 		return (1);
-	if (!(buff = ft_calloc(1, BUFFER_SIZE * sizeof(char))))
+	if (i == -1)
 		return (-1);
-	if ((rd = read(fd, buff, BUFFER_SIZE)) == -1)
-		return (-1);
-	if (rd == 0)
+	//LECTURE DU FICHIER SI BESOIN
+
+	buff = ft_calloc(1, sizeof(char) * BUFFER_SIZE);
+	while ((rd  = read(fd, buff, BUFFER_SIZE)) > 0 && endofline(buff, BUFFER_SIZE) == -1)
 	{
-		free(buff);
-		return (*line && charsleft ? 1 : 0);
+		memjoin(line, i, buff, BUFFER_SIZE);
 	}
-	if ((i = readloop(fd, &rd, buff, line)) == -1)
-		return (-1);
-	allocandconcat(line, buff, i);
-	if (i != BUFFER_SIZE)
-		charsleft = (rd == i ? 0 : ft_substr(buff, i, BUFFER_SIZE - i - 1));
-	free(buff);
-	return (1);
+	if (rd == -1)
+	//if (charsleft())
+	//	return (0);
+	*line = 0;
+	return (rd == 0 ? 0 : 1);
 }

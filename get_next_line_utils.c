@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 14:58:25 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/24 15:44:32 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/26 18:51:03 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,24 +63,54 @@ int	endofline(char *str, int len)
 	return (-1);
 }
 
-int	allocandconcat(char **line, char *buff, int tocpy)
+char	*ft_memjoin(char const *s1, size_t l1, char const *s2, size_t l2)
 {
-	char	*tmp;
-	int		i;
-	int		l;
+	char	*str;
+	char	*ptr;
 
-	l = (*line ? ft_strlen(*line) : 0);
-	if (!(tmp = ft_calloc(1,(l + tocpy + 1) * sizeof(char))))
+	if (!(str = ft_calloc(1, l1 + l2)))
 		return (0);
-	i = -1;
-	while (++i < l)
-		tmp[i] = (*line)[i];
-	i = -1;
-	while (++i < tocpy)
-		tmp[l + i] = buff[i];
-	if (*line)
-		free(*line);
-	*line = tmp;
-	i = -1;
-	return (1);
+	ptr = str;
+	while (l1--)
+		*ptr++ = *s1++;
+	while (l2--)
+		*ptr++ = *s2++;
+	return (str);
+}
+
+
+t_list	*ft_lstnew(int fd)
+{
+	t_list *el;
+
+	if (!(el = ft_calloc(1, sizeof(t_list))))
+		return (NULL);
+	el->fd = fd;
+	el->charsleft = 0;
+	el->size = 0;
+	el->next = 0;
+	return (el);
+}
+
+t_list	*ft_lst_by_fd(int fd, t_list **list)
+{
+	t_list *prev;
+	t_list *l;
+
+	if (!*list)
+	{
+		*list = ft_lstnew(fd);
+		return (*list);
+	}
+	l = *list;
+	while (l)
+		if (fd == l->fd)
+			return (l);
+		else
+		{
+			prev = l;
+			l = l->next;
+		}
+	prev->next = ft_lstnew(fd);
+	return (prev->next);
 }
