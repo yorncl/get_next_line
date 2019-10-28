@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 2
+#  define BUFFER_SIZE 1
 # endif
 
 # include <stdlib.h>
@@ -28,23 +28,27 @@ typedef struct	s_list
 	char			*charsleft;
 	int				size;
 	struct s_list	*next;
-}				t_list;
+}					t_list;
+typedef struct	s_line
+{
+	char	**line;
+	int		size;
+}				t_line;
 
 /*
 **	get_next_line.c
 */
-int		get_next_line(int fd, char **line);
-int		endofline(char *str, int len);
-char	*init_buff(void);
+int				get_next_line(int fd, char **line);
+int				endofline(char *str, int len);
+char			*init_buff(void);
 
 /*
 **	get_next_line_utils.c
 */
-int		ft_strlen(const char *s);
-void	*ft_calloc(size_t count, size_t size);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
-char	*ft_strjoin(char const *s1, char const *s2);
-t_list	*ft_lstnew(int fd);
-t_list	*ft_lst_by_fd(int fd, t_list **list);
+void			*ft_calloc(size_t count, size_t size);
+char			*ft_substr(char const *s, unsigned int start, size_t len);
+char			*ft_memjoin(char const *s1, int l1, char const *s2, int l2);
+t_list			*ft_lstnew(int fd);
+t_list			*ft_lst_by_fd(int fd, t_list **list);
 
 #endif

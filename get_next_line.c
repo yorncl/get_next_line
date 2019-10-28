@@ -12,9 +12,7 @@
 
 #include "get_next_line.h"
 
-
-
-int		managecharsleft(t_list *l, char **line)
+int		managecharsleft(t_list *l, t_line *s_line)
 {
 	char *tmp;
 	int	eol;
@@ -23,58 +21,78 @@ int		managecharsleft(t_list *l, char **line)
 		return (0);
 	if ((eol = endofline(l->charsleft, l->size)) != -1) 	//SI FIN DE LIGNE
 	{
-		if (eol == 0 && !(*line = ft_calloc(1, 1))) // si le \n est le premier charactere
+		if (eol == 0 && !(*(s_line->line) = ft_calloc(1, 1))) // si le \n est le premier charactere
 			return (-1);
-		else if (!(*line = ft_substr(l->charsleft, 0, eol))) // on ne rajoute pas le + 1 pour ne pas inclure le \n dans line
+		else if (!(*(s_line->line) = ft_substr(l->charsleft, 0, eol))) // on ne rajoute pas le + 1 pour ne pas inclure le \n dans line
 			return (-1);
 		tmp = l->charsleft;
 		l->charsleft = l->size == 1 ? 0 :
 			ft_substr(l->charsleft, eol + 1, l->size - eol); // CHECK ERROR CHECK ERROR CHECK ERROR CHECK ERROR
 		free(tmp);
 		l->size -= eol + 1;
-		return (0);
+		return (1);	//one line read
 	}
 	else{
-		*line = l->charsleft; // no need to free
+		*(s_line->line) = l->charsleft; // no need to free
 		l->charsleft = 0;
-		eol = l->size;
+		s_line->size = l->size;
 		l->size = 0;
-		return (eol); // Return the length of the string just read
+		return (0); // No line read
 	}
 }
 
+
+int	readloop(int fd, char *buff, t_line	*s_line, t_list *current)
+{
+	char *tmp;
+	int rd;
+	int eol;
+	int i;
+
+	while ((rd  = read(fd, buff, BUFFER_SIZE)) > 0 && (eol = endofline(buff, rd)) == -1)
+	{
+		tmp = *(s_line->line);
+		*(s_line->line) = ft_memjoin(*(s_line->line), s_line->size, buff, rd); // TO PROTECC
+		s_line->size += rd;
+		free(tmp);
+		i = -1;
+		while(++i < BUFFER_SIZE)
+			buff[i] = 0;
+	}
+	if (rd == -1)
+		return (-1);
+	if (rd == 0 && *(s_line->line) == 0) // Fin de fichier sans aucun byte lu
+			return (0);
+	if (rd == 0 && eol == -1) // If nothing else to read and still no end of line
+		return (0);
+	tmp = *(s_line->line);
+	*(s_line->line) = ft_memjoin(*(s_line->line), s_line->size, buff, eol); // TO PROTECC on ne met pas de + 1 pour ne pas inclure le \n
+	s_line->size += eol;
+	free(tmp);
+	current->charsleft = eol + 1 == rd ? 0 : ft_substr(buff, eol + 1, rd - eol - 1); // on met +1 pour ne pas inclure le \n
+	current->size = rd - eol - 1;
+	return (1);
+}
 
 int	get_next_line(int fd, char **line)
 {
 	static t_list	*list;
 	t_list			*current;
+	t_line			s_line;
 	char			*buff;
-	int				rd;
 	int				i;
 
-	(void) current;	
-	(void)	buff;
-	rd = 0;
-	//ERREUR MAILLON
+	i = 0;
+	*line = 0;
+	s_line = (t_line) {.size = 0, .line = line};
 	if(!(current = ft_lst_by_fd(fd, &list)))
 		return (-1);
-	//CE QUI RESTE
-	current->charsleft = strdup("1\n2\n3");
-	current->size = ft_strlen("1\n2\n3");
-	if ((i = managecharsleft(current, line)) == 0)
+	if ((i = managecharsleft(current, &s_line)) == 1)
 		return (1);
 	if (i == -1)
 		return (-1);
-	//LECTURE DU FICHIER SI BESOIN
-
 	buff = ft_calloc(1, sizeof(char) * BUFFER_SIZE);
-	while ((rd  = read(fd, buff, BUFFER_SIZE)) > 0 && endofline(buff, BUFFER_SIZE) == -1)
-	{
-		memjoin(line, i, buff, BUFFER_SIZE);
-	}
-	if (rd == -1)
-	//if (charsleft())
-	//	return (0);
-	*line = 0;
-	return (rd == 0 ? 0 : 1);
+	i = readloop(fd, buff, &s_line, current);
+	free(buff);
+	return (i);
 }

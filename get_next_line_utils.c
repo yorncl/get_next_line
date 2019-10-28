@@ -12,16 +12,6 @@
 
 #include "get_next_line.h"
 
-int		ft_strlen(const char *s)
-{
-	int l;
-
-	l = 0;
-	while (s[l])
-		l++;
-	return (l);
-}
-
 void	*ft_calloc(size_t count, size_t size)
 {
 	unsigned char	*ptr;
@@ -44,9 +34,13 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 
 	if (!(dest = (ft_calloc(1, len + 1))))
 		return (0);
-	i = -1;
-	while (s[++i] && i < len)
+	i = 0;
+	while (i < len)
+	{
 		dest[i] = s[start + i];
+		i++;	
+	}
+	dest[i] = '\0';
 	return (dest);
 }
 
@@ -54,27 +48,32 @@ int	endofline(char *str, int len)
 {
 	int i;
 
+	//printf("LEN IN ENDOFLINE : %d\n", len);
 	if (!str)
 		return (-1);
 	i = -1;
-	while (++i < len && str[i])
+	while (++i < len)
 		if (str[i] == '\n')
 			return (i);
 	return (-1);
 }
 
-char	*ft_memjoin(char const *s1, size_t l1, char const *s2, size_t l2)
+char	*ft_memjoin(char const *s1, int l1, char const *s2, int l2)
 {
 	char	*str;
 	char	*ptr;
 
-	if (!(str = ft_calloc(1, l1 + l2)))
+	//printf("%d %d\n", l1, l2);
+	if (!(str = ft_calloc(1, l1 + l2 + 1)))
 		return (0);
 	ptr = str;
-	while (l1--)
-		*ptr++ = *s1++;
-	while (l2--)
-		*ptr++ = *s2++;
+	if(l1)
+		while (l1--)
+			*ptr++ = *s1++;
+	if (l2)
+		while (l2--)
+			*ptr++ = *s2++;
+	*ptr = '\0';
 	return (str);
 }
 
