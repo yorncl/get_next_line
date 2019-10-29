@@ -5,13 +5,13 @@
 #include <fcntl.h>
 #include "get_next_line.h"
 
-int main()
+int main(int ac, char **av)
 {
 	printf("Bonjour !\n");
-
+	(void) ac;
 	printf("BUFFER_SIZE = %d\n", BUFFER_SIZE);	
-	int fd = open("testfile", O_RDONLY);
-	printf("%d\n\n", fd);
+	int fd = open(av[1], O_RDONLY);
+	printf("FILE FD : %d\n\n", fd);
 	int returned;
 	char *str;
 	(void) returned;

@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 10:58:05 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/29 11:43:32 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/29 16:58:49 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int		readloop(int fd, char *buff, t_line *s_line, t_list *current)
 	int i;
 
 	while ((rd = read(fd, buff, BUFFER_SIZE)) > 0 &&
-			(eol = endofline(buff, rd)) == -1)
+		(eol = endofline(buff, rd)) == -1)
 	{
 		allocandconcat(s_line, buff, rd);
 		i = -1;
@@ -113,6 +113,8 @@ int		get_next_line(int fd, char **line)
 		return (-1);
 	buff = ft_calloc(1, sizeof(char) * BUFFER_SIZE);
 	i = readloop(fd, buff, &s_line, current);
+//	if (i == 0)
+//		ft_lst_remove();
 	free(buff);
 	return (i);
 }
