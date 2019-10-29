@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 14:58:25 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/26 18:51:03 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/29 11:13:07 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,17 +38,16 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	while (i < len)
 	{
 		dest[i] = s[start + i];
-		i++;	
+		i++;
 	}
 	dest[i] = '\0';
 	return (dest);
 }
 
-int	endofline(char *str, int len)
+int		endofline(char *str, int len)
 {
 	int i;
 
-	//printf("LEN IN ENDOFLINE : %d\n", len);
 	if (!str)
 		return (-1);
 	i = -1;
@@ -57,26 +56,6 @@ int	endofline(char *str, int len)
 			return (i);
 	return (-1);
 }
-
-char	*ft_memjoin(char const *s1, int l1, char const *s2, int l2)
-{
-	char	*str;
-	char	*ptr;
-
-	//printf("%d %d\n", l1, l2);
-	if (!(str = ft_calloc(1, l1 + l2 + 1)))
-		return (0);
-	ptr = str;
-	if(l1)
-		while (l1--)
-			*ptr++ = *s1++;
-	if (l2)
-		while (l2--)
-			*ptr++ = *s2++;
-	*ptr = '\0';
-	return (str);
-}
-
 
 t_list	*ft_lstnew(int fd)
 {

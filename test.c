@@ -11,6 +11,7 @@ int main()
 
 	printf("BUFFER_SIZE = %d\n", BUFFER_SIZE);	
 	int fd = open("testfile", O_RDONLY);
+	printf("%d\n\n", fd);
 	int returned;
 	char *str;
 	(void) returned;

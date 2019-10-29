@@ -6,75 +6,95 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 10:58:05 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/26 18:54:09 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/29 11:43:32 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+char	*ft_memjoin(char const *s1, int l1, char const *s2, int l2)
+{
+	char	*str;
+	char	*ptr;
+
+	if (!(str = ft_calloc(1, l1 + l2 + 1)))
+		return (0);
+	ptr = str;
+	if (l1)
+		while (l1--)
+			*ptr++ = *s1++;
+	if (l2)
+		while (l2--)
+			*ptr++ = *s2++;
+	*ptr = '\0';
+	return (str);
+}
+
 int		managecharsleft(t_list *l, t_line *s_line)
 {
-	char *tmp;
-	int	eol;
+	char	*tmp;
+	int		eol;
 
 	if (l->charsleft == 0)
 		return (0);
-	if ((eol = endofline(l->charsleft, l->size)) != -1) 	//SI FIN DE LIGNE
+	if ((eol = endofline(l->charsleft, l->size)) != -1)
 	{
-		if (eol == 0 && !(*(s_line->line) = ft_calloc(1, 1))) // si le \n est le premier charactere
-			return (-1);
-		else if (!(*(s_line->line) = ft_substr(l->charsleft, 0, eol))) // on ne rajoute pas le + 1 pour ne pas inclure le \n dans line
+		if (!(*(s_line->line) = ft_substr(l->charsleft, 0, eol)))
 			return (-1);
 		tmp = l->charsleft;
 		l->charsleft = l->size == 1 ? 0 :
-			ft_substr(l->charsleft, eol + 1, l->size - eol); // CHECK ERROR CHECK ERROR CHECK ERROR CHECK ERROR
+			ft_substr(l->charsleft, eol + 1, l->size - eol);
 		free(tmp);
 		l->size -= eol + 1;
-		return (1);	//one line read
+		return (1);
 	}
-	else{
-		*(s_line->line) = l->charsleft; // no need to free
+	else
+	{
+		*(s_line->line) = l->charsleft;
 		l->charsleft = 0;
 		s_line->size = l->size;
 		l->size = 0;
-		return (0); // No line read
+		return (0);
 	}
 }
 
-
-int	readloop(int fd, char *buff, t_line	*s_line, t_list *current)
+int		allocandconcat(t_line *s_line, char *buff, int tocpy)
 {
 	char *tmp;
+
+	tmp = *(s_line->line);
+	*(s_line->line) = ft_memjoin(*(s_line->line), s_line->size, buff, tocpy);
+	s_line->size += tocpy;
+	free(tmp);
+	return (0);
+}
+
+int		readloop(int fd, char *buff, t_line *s_line, t_list *current)
+{
 	int rd;
 	int eol;
 	int i;
 
-	while ((rd  = read(fd, buff, BUFFER_SIZE)) > 0 && (eol = endofline(buff, rd)) == -1)
+	while ((rd = read(fd, buff, BUFFER_SIZE)) > 0 &&
+			(eol = endofline(buff, rd)) == -1)
 	{
-		tmp = *(s_line->line);
-		*(s_line->line) = ft_memjoin(*(s_line->line), s_line->size, buff, rd); // TO PROTECC
-		s_line->size += rd;
-		free(tmp);
+		allocandconcat(s_line, buff, rd);
 		i = -1;
-		while(++i < BUFFER_SIZE)
+		while (++i < BUFFER_SIZE)
 			buff[i] = 0;
 	}
 	if (rd == -1)
 		return (-1);
-	if (rd == 0 && *(s_line->line) == 0) // Fin de fichier sans aucun byte lu
-			return (0);
-	if (rd == 0 && eol == -1) // If nothing else to read and still no end of line
+	if ((rd == 0 && *(s_line->line) == 0) || (rd == 0 && eol == -1))
 		return (0);
-	tmp = *(s_line->line);
-	*(s_line->line) = ft_memjoin(*(s_line->line), s_line->size, buff, eol); // TO PROTECC on ne met pas de + 1 pour ne pas inclure le \n
-	s_line->size += eol;
-	free(tmp);
-	current->charsleft = eol + 1 == rd ? 0 : ft_substr(buff, eol + 1, rd - eol - 1); // on met +1 pour ne pas inclure le \n
+	allocandconcat(s_line, buff, eol);
+	current->charsleft = eol + 1 == rd ? 0 :
+		ft_substr(buff, eol + 1, rd - eol - 1);
 	current->size = rd - eol - 1;
 	return (1);
 }
 
-int	get_next_line(int fd, char **line)
+int		get_next_line(int fd, char **line)
 {
 	static t_list	*list;
 	t_list			*current;
@@ -85,7 +105,7 @@ int	get_next_line(int fd, char **line)
 	i = 0;
 	*line = 0;
 	s_line = (t_line) {.size = 0, .line = line};
-	if(!(current = ft_lst_by_fd(fd, &list)))
+	if (!(current = ft_lst_by_fd(fd, &list)))
 		return (-1);
 	if ((i = managecharsleft(current, &s_line)) == 1)
 		return (1);
