@@ -17,7 +17,6 @@ int main(int ac, char **av)
 	(void) returned;
 	returned = get_next_line(fd, &str);
 	printf("1rst line : \"%s\"	returned : %d\n",str, returned);
-
 	returned = get_next_line(fd, &str);
 	printf("2nd line : \"%s\"	returned : %d\n",str, returned);
 	returned = get_next_line(fd, &str);
