@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 14:57:28 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/29 16:43:01 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/30 08:27:05 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int				readloop(int fd, char *buff, t_line *s_line, t_list *current);
 **	get_next_line_utils.c
 */
 int				endofline(char *str, int len);
-void			*ft_calloc(size_t count, size_t size);
+void			ft_lst_remove(int fd, t_list **list);
 char			*ft_substr(char const *s, unsigned int start, size_t len);
 t_list			*ft_lstnew(int fd);
 t_list			*ft_lst_by_fd(int fd, t_list **list);
