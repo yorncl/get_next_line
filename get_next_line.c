@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 10:58:05 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/30 08:49:07 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/30 10:47:06 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,19 +33,21 @@ char	*ft_memjoin(char const *s1, int l1, char const *s2, int l2)
 int		managecharsleft(t_list *l, t_line *s_line)
 {
 	char	*tmp;
-	int		eol;
+	int		e;
 
 	if (l->charsleft == 0)
 		return (0);
-	if ((eol = endofline(l->charsleft, l->size)) != -1)
+	if ((e = endofline(l->charsleft, l->size)) != -1)
 	{
-		if (!(*(s_line->line) = ft_substr(l->charsleft, 0, eol)))
+		if (!(*(s_line->line) = ft_substr(l->charsleft, 0, e)))
 			return (-1);
 		tmp = l->charsleft;
-		l->charsleft = l->size == eol + 1 ? 0 :
-			ft_substr(l->charsleft, eol + 1, l->size - eol);
+		if (l->size == e + 1)
+			l->charsleft = 0;
+		else if (!(l->charsleft = ft_substr(l->charsleft, e + 1, l->size - e)))
+			return (-1);
 		free(tmp);
-		l->size -= eol + 1;
+		l->size -= e + 1;
 		return (1);
 	}
 	else
@@ -53,8 +55,7 @@ int		managecharsleft(t_list *l, t_line *s_line)
 		*(s_line->line) = l->charsleft;
 		l->charsleft = 0;
 		s_line->size = l->size;
-		l->size = 0;
-		return (0);
+		return (l->size = 0);
 	}
 }
 

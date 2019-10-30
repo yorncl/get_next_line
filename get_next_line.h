@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 14:57:28 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/30 08:27:05 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/30 10:59:29 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,11 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 50
+#  define BUFFER_SIZE 320
 # endif
 
 # include <stdlib.h>
 # include <unistd.h>
-
-#include <stdio.h>
-
 
 typedef struct	s_list
 {
