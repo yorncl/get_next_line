@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 10:58:05 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/30 10:47:06 by mclaudel         ###   ########.fr       */
+/*   Updated: 2019/10/31 17:42:55 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,16 +109,21 @@ int		get_next_line(int fd, char **line)
 	char			*buff;
 	int				i;
 
-	i = 0;
+	if (BUFFER_SIZE < 0 ||
+		!line || fd < 0 || !(current = ft_lst_by_fd(fd, &list)))
+		return (-1);
 	*line = 0;
 	s_line = (t_line) {.size = 0, .line = line};
-	if (fd < 0 || !(current = ft_lst_by_fd(fd, &list)))
-		return (-1);
 	if ((i = managecharsleft(current, &s_line)) == 1)
 		return (1);
 	if (i == -1 || !(buff = malloc(sizeof(char) * BUFFER_SIZE)))
 		return (-1);
-	i = readloop(fd, buff, &s_line, current);
+	if ((i = readloop(fd, buff, &s_line, current)) == 0 && !*line)
+	{
+		if (!(*line = malloc(1)))
+			return (-1);
+		*line[0] = '\0';
+	}
 	if (i == 0)
 		ft_lst_remove(fd, &list);
 	free(buff);
