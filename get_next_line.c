@@ -30,7 +30,7 @@ char	*ft_memjoin(char const *s1, int l1, char const *s2, int l2)
 	return (str);
 }
 
-int		managecharsleft(t_list *l, t_line *s_line)
+int		managecharsleft(t_listgnl *l, t_line *s_line)
 {
 	char	*tmp;
 	int		e;
@@ -72,7 +72,7 @@ int		allocandconcat(t_line *s_line, char *buff, int tocpy)
 	return (0);
 }
 
-int		readloop(int fd, char *buff, t_line *s_line, t_list *current)
+int		readloop(int fd, char *buff, t_line *s_line, t_listgnl *current)
 {
 	int rd;
 	int eol;
@@ -103,8 +103,8 @@ int		readloop(int fd, char *buff, t_line *s_line, t_list *current)
 
 int		get_next_line(int fd, char **line)
 {
-	static t_list	*list;
-	t_list			*current;
+	static t_listgnl	*list;
+	t_listgnl			*current;
 	t_line			s_line;
 	char			*buff;
 	int				i;

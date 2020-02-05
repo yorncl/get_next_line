@@ -20,13 +20,13 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-typedef struct	s_list
+typedef struct	s_listgnl
 {
 	int				fd;
 	char			*charsleft;
 	int				size;
-	struct s_list	*next;
-}				t_list;
+	struct s_listgnl	*next;
+}				t_listgnl;
 
 typedef struct	s_line
 {
@@ -38,18 +38,18 @@ typedef struct	s_line
 **	get_next_line.c
 */
 int				get_next_line(int fd, char **line);
-int				managecharsleft(t_list *l, t_line *s_line);
+int				managecharsleft(t_listgnl *l, t_line *s_line);
 int				allocandconcat(t_line *s_line, char *buff, int tocpy);
 char			*ft_memjoin(char const *s1, int l1, char const *s2, int l2);
-int				readloop(int fd, char *buff, t_line *s_line, t_list *current);
+int				readloop(int fd, char *buff, t_line *s_line, t_listgnl *current);
 
 /*
 **	get_next_line_utils.c
 */
 int				endofline(char *str, int len);
-void			ft_lst_remove(int fd, t_list **list);
+void			ft_lst_remove(int fd, t_listgnl **list);
 char			*ft_substr(char const *s, unsigned int start, size_t len);
-t_list			*ft_lstnew(int fd);
-t_list			*ft_lst_by_fd(int fd, t_list **list);
+t_listgnl			*ft_lstnewgnl(int fd);
+t_listgnl			*ft_lst_by_fd(int fd, t_listgnl **list);
 
 #endif
