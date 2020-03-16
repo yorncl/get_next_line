@@ -27,8 +27,7 @@ typedef struct	s_gnllst
 	int				fd;
 	char			*charsleft;
 	int				size;
-
-typedef	struct s_gnllst	*next;
+	struct s_gnllst	*next;
 }				t_gnllst;
 
 typedef struct	s_line
