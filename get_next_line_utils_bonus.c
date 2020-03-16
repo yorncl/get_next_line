@@ -43,11 +43,11 @@ int		endofline(char *str, int len)
 	return (-1);
 }
 
-t_list	*ft_lstnew(int fd)
+t_gnllst	*ft_lstgnlnew(int fd)
 {
-	t_list *el;
+	t_gnllst *el;
 
-	if (!(el = malloc(sizeof(t_list))))
+	if (!(el = malloc(sizeof(t_gnllst))))
 		return (NULL);
 	el->fd = fd;
 	el->charsleft = 0;
@@ -56,14 +56,14 @@ t_list	*ft_lstnew(int fd)
 	return (el);
 }
 
-t_list	*ft_lst_by_fd(int fd, t_list **list)
+t_gnllst	*ft_lst_by_fd(int fd, t_gnllst **list)
 {
-	t_list *prev;
-	t_list *l;
+	t_gnllst *prev;
+	t_gnllst *l;
 
 	if (!*list)
 	{
-		*list = ft_lstnew(fd);
+		*list = ft_lstgnlnew(fd);
 		return (*list);
 	}
 	l = *list;
@@ -75,14 +75,14 @@ t_list	*ft_lst_by_fd(int fd, t_list **list)
 			prev = l;
 			l = l->next;
 		}
-	prev->next = ft_lstnew(fd);
+	prev->next = ft_lstgnlnew(fd);
 	return (prev->next);
 }
 
-void	ft_lst_remove(int fd, t_list **list)
+void	ft_lst_remove(int fd, t_gnllst **list)
 {
-	t_list *prev;
-	t_list *curr;
+	t_gnllst *prev;
+	t_gnllst *curr;
 
 	curr = *list;
 	if (curr->fd == fd)
