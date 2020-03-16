@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/13 14:57:28 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/31 15:53:41 by mclaudel         ###   ########.fr       */
+/*   Created: 2019/10/31 18:16:20 by mclaudel          #+#    #+#             */
+/*   Updated: 2019/10/31 18:16:23 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 31
@@ -20,15 +20,12 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-
 typedef struct	s_gnllst
-
 {
 	int				fd;
 	char			*charsleft;
 	int				size;
-
-typedef	struct s_gnllst	*next;
+	struct s_gnllst	*next;
 }				t_gnllst;
 
 typedef struct	s_line
@@ -54,6 +51,5 @@ void			ft_lst_remove(int fd, t_gnllst **list);
 char			*ft_substr(char const *s, unsigned int start, size_t len);
 t_gnllst			*ft_lstgnlnew(int fd);
 t_gnllst			*ft_lst_by_fd(int fd, t_gnllst **list);
-
 
 #endif
