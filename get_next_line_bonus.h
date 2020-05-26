@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/31 18:16:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/31 18:16:23 by mclaudel         ###   ########.fr       */
+/*   Updated: 2020/05/26 14:52:10 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int				readloop(int fd, char *buff, t_line *s_line, t_gnllst *current);
 int				endofline(char *str, int len);
 void			ft_lst_remove(int fd, t_gnllst **list);
 char			*ft_substr(char const *s, unsigned int start, size_t len);
-t_gnllst			*ft_lstgnlnew(int fd);
-t_gnllst			*ft_lst_by_fd(int fd, t_gnllst **list);
+t_gnllst		*ft_lstgnlnew(int fd);
+t_gnllst		*ft_lst_by_fd(int fd, t_gnllst **list);
 
 #endif

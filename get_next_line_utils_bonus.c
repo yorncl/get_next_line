@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 14:58:25 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/31 18:02:56 by mclaudel         ###   ########.fr       */
+/*   Updated: 2020/05/26 14:53:18 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char		*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	char	*dest;
 	size_t	i;
@@ -30,7 +30,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return (dest);
 }
 
-int		endofline(char *str, int len)
+int			endofline(char *str, int len)
 {
 	int i;
 
@@ -79,7 +79,7 @@ t_gnllst	*ft_lst_by_fd(int fd, t_gnllst **list)
 	return (prev->next);
 }
 
-void	ft_lst_remove(int fd, t_gnllst **list)
+void		ft_lst_remove(int fd, t_gnllst **list)
 {
 	t_gnllst *prev;
 	t_gnllst *curr;

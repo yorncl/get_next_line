@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 10:58:05 by mclaudel          #+#    #+#             */
-/*   Updated: 2019/10/31 17:42:55 by mclaudel         ###   ########.fr       */
+/*   Updated: 2020/05/26 14:52:39 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ int		readloop(int fd, char *buff, t_line *s_line, t_gnllst *current)
 int		get_next_line(int fd, char **line)
 {
 	static t_gnllst	*list;
-	t_gnllst			*current;
+	t_gnllst		*current;
 	t_line			s_line;
 	char			*buff;
 	int				i;
